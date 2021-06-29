@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="tau-prolog.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <!-- Program -->
+<textarea class="example-textinput example-program" id="program" rows="30" cols="150">
+    % HECHOS
+    % progenitor(PADRE,HIJO)
+    progenitor(alejandro,fernando).
+    progenitor(alejandro,raul).
+    progenitor(sabina,fernando).
+    progenitor(sabina,raul).
+    progenitor(karina,camila).
+    progenitor(karina,leonardo).
+    progenitor(fernando,camila).
+    progenitor(fernando,leonardo).  
+    progenitor(raul,andre).
+    progenitor(raul,eduardo).
+    progenitor(vanessa,andre).
+    progenitor(vanessa,eduardo).
+    %REGLA
+    abuelo(A,N):-progenitor(A,P),progenitor(P,N).
+    hermano(H1,H2):-progenitor(P,H1),progenitor(P,H2),H1\=H2.
+    tio(T,S):-progenitor(P,S),hermano(P,T). 
+    </textarea>
+    <br>
+    <!-- Name -->
+    <input class="example-textinput example-goal" type="text" id="name" onKeyup="changeName();" value="" placeholder="Enter a name" />
+    
+    <!-- Button -->
+    <input class="example-button" type="button" value="See all likes" id="button" onClick="clickButton();" />
+        <br>
+        <br>
+    <!-- Answers -->
+    <div class="example-result" id="result"></div>
+    
+    
+    
+    <script type="text/javascript">
+    
+    /** LIKES */
+    
+    // Callback function
+    function show(name) {
+        // Get output container
+        var result = document.getElementById("result");
+        // Return callback function
+        return result.innerHTML = result.innerHTML + "<div>" + name + "</div>";
+         
+    }
+    
+    function likes(name) {
+       
+        (async() => {
+
+            const program = document.getElementById("program").value;
+            const goal = name;
+
+
+            const session = pl.create();
+
+            await session.promiseConsult(program);
+            await session.promiseQuery(goal);
+
+            for await (let answer of session.promiseAnswers())
+                show(session.format_answer(answer));
+
+        })();
+    
+    }
+    
+    /** EVENTS */
+    
+    // onClick #button
+    function clickButton() {
+        // Get person
+        var name = document.getElementById("name").value;
+        name = name != "" ? name : "Y";
+        // Get likes
+        likes(name);
+    }
+    
+    // onChange #name
+    function changeName() {
+        var name = document.getElementById("name").value;
+        document.getElementById("button").value = name != "" ? "Su consulta es:  " + name  + " || todo correcto?" : "Escriba una consulta";
+    }
+    changeName();
+    
+    </script>
+</body>
+</html>
