@@ -10,24 +10,29 @@
 <body>
     <!-- Program -->
 <textarea class="example-textinput example-program" id="program" rows="30" cols="150">
-    % HECHOS
-    % progenitor(PADRE,HIJO)
-    progenitor(alejandro,fernando).
-    progenitor(alejandro,raul).
-    progenitor(sabina,fernando).
-    progenitor(sabina,raul).
-    progenitor(karina,camila).
-    progenitor(karina,leonardo).
-    progenitor(fernando,camila).
-    progenitor(fernando,leonardo).  
-    progenitor(raul,andre).
-    progenitor(raul,eduardo).
-    progenitor(vanessa,andre).
-    progenitor(vanessa,eduardo).
-    %REGLA
-    abuelo(A,N):-progenitor(A,P),progenitor(P,N).
-    hermano(H1,H2):-progenitor(P,H1),progenitor(P,H2),H1\=H2.
-    tio(T,S):-progenitor(P,S),hermano(P,T). 
+    %HECHOS
+%progenitor(PADRE,HIJO)
+progenitor(alejandro,fernando).
+progenitor(alejandro,raul).
+progenitor(sabina,fernando).
+progenitor(sabina,raul).
+progenitor(karina,camila).
+progenitor(karina,leonardo).
+progenitor(fernando,camila).
+progenitor(fernando,leonardo).
+progenitor(raul,andre).
+progenitor(raul,eduardo).
+progenitor(vanessa,andre).
+progenitor(vanessa,eduardo).
+
+%REGLA
+abuelo(A,N):-progenitor(A,P),progenitor(P,N).
+hermano(H1,H2):-progenitor(P,H1),progenitor(P,H2),H1\=H2.
+tio(T,S):-progenitor(P,S),hermano(P,T).
+primo(A,B):-tio(C,A),progenitor(C,B).
+suegro(A,B):-progenitor(A,C),abuelo(B,C).
+cunado(E,C):-progenitor(E,H),progenitor(T,H),T\=E,hermano(T,C).
+concunado(E,T):-cunado(E,G),progenitor(G,H),progenitor(T,H),T\=G.
     </textarea>
     <br>
     <!-- Name -->
@@ -56,6 +61,8 @@
     }
     
     function likes(name) {
+
+        document.getElementById("result").innerHTML = "";
        
         (async() => {
 
